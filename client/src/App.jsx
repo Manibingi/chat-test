@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://chat-test-server-0abn.onrender.com");
+// const socket = io("http://localhost:5000");
 
 function App() {
   const [message, setMessage] = useState("");
@@ -16,9 +17,11 @@ function App() {
       setMessages((prev) => [...prev, msg]);
     });
 
-    axios.get(`http://localhost:5000/api/messages/${roomId}`).then((res) => {
-      setMessages(res.data);
-    });
+    axios
+      .get(`https://chat-test-server-0abn.onrender.com/api/messages/${roomId}`)
+      .then((res) => {
+        setMessages(res.data);
+      });
 
     return () => socket.off("receive-message");
   }, []);
@@ -26,7 +29,10 @@ function App() {
   const sendMessage = () => {
     const newMsg = { sender: "User", content: message, room: roomId };
     socket.emit("send-message", { roomId, message: newMsg });
-    axios.post("http://localhost:5000/api/messages", newMsg);
+    axios.post(
+      "https://chat-test-server-0abn.onrender.com/api/messages",
+      newMsg
+    );
     setMessages((prev) => [...prev, newMsg]);
     setMessage("");
   };
